@@ -1,8 +1,8 @@
 # ---- Build stage ----
 FROM node:20-alpine AS build
 WORKDIR /app
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production && npm cache clean --force
+COPY package.json ./
+RUN npm install --only=production && npm cache clean --force
 
 # ---- Production stage ----
 FROM node:20-alpine AS production
@@ -12,7 +12,6 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Security: remove unnecessary packages
 RUN apk --no-cache add dumb-init
-
 WORKDIR /app
 
 # Copy only production dependencies from build stage
